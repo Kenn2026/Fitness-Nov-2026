@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Performance - Coach & Client Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                            accent: '#a855f7',
+                            neon: '#c084fc'
+                        },
+                        darkbg: '#090d16',
+                        cardbg: '#131b2e',
+                        borderbg: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #f1f5f9;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        .pulse-glow {
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- SIDEBAR / NAVIGATION -->
+    <aside class="w-full md:w-64 bg-cardbg border-r border-slate-800 flex flex-col justify-between shrink-0 z-20">
+        <div>
+                <div class="flex flex-col space-y-[2px]">
+                    <span id="section-info-badge" class="text-xs font-bold text-slate-300 flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-accent"></span>
+                        <span id="section-title-text">Section 1: Mobility Exercises (6 Movements)</span>
+                    </span>
+                    <span class="text-[11px] text-slate-500">Coach K.Flanning Approved • Click video thumbnail to watch Form Guide</span>
+                </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg tracking-tight text-white leading-none">APEX<span class="text-brand-accent">FIT</span></h1>
+                        <span class="text-xs text-slate-400 font-medium">Coach & Client Hub</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Switcher Dropdown -->
+            <div class="px-4 py-4 border-b border-slate-800/60">
+                <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1.5 px-1">Active Client</label>
+                <div class="relative">
+                    <select id="clientSelect" onchange="switchClient(this.value)" class="w-full bg-slate-900/90 border border-slate-700/80 text-slate-200 text-sm rounded-lg px-3 py-2 appearance-none focus:outline-none focus:border-brand-500 transition-colors">
+                        <option value="andrea">Andrea Erickson (Goal: -15 lbs)</option>
+                        <option value="marcus">Marcus Vance (Goal: Hypertrophy)</option>
+                        <option value="sarah">Sarah Jenkins (Goal: Recomp)</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-3 space-y-1">
+                <button onclick="switchTab('tab-feed')" id="nav-tab-feed" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-neon bg-brand-900/40 border border-brand-500/30">
+                    <i class="fa-solid fa-house w-5 text-center"></i>
+                    <span>Feed & Onboarding</span>
+                </button>
+
+                <button onclick="switchTab('tab-workout')" id="nav-tab-workout" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-stopwatch w-5 text-center"></i>
+                    <span>Workout Logger</span>
+                    <span class="ml-auto bg-brand-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
+                </button>
+
+                <button onclick="switchTab('tab-exercises')" id="nav-tab-exercises" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-dumbbell w-5 text-center"></i>
+                    <span>Exercise Library</span>
+                </button>
+
+                <button onclick="switchTab('tab-analytics')" id="nav-tab-analytics" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>Progress & Macros</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Coach Footer Info -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/40">
+            <div class="flex items-center space-x-3">
+                <img src="IMG_5032_2.jpg" alt="Coach K.Flanning" class="w-10 h-10 rounded-full object-cover border-2 border-brand-500 shadow-md shadow-brand-500/20" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80';">
+                <div class="overflow-hidden">
+                    <p class="text-sm font-semibold text-slate-200 truncate">Coach K.Flanning</p>
+                    <p class="text-xs text-brand-accent font-medium truncate">M.S. Kinesiology, CSCS</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        
+        <!-- Top App Bar / Mobile Header -->
+        <header class="bg-cardbg/80 backdrop-blur border-b border-slate-800 sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h2 id="page-title" class="text-xl font-bold text-white tracking-tight">Client Welcome Feed</h2>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 mr-2">
+                    <img src="IMG_5032_2.jpg" alt="Coach K.Flanning" class="w-8 h-8 rounded-full object-cover border border-brand-500" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80';">
+                    <span class="text-xs font-semibold text-slate-200 hidden md:inline">Coach K.Flanning</span>
+                </div>
+                <button onclick="openModal('modal-add-exercise')" class="hidden sm:flex items-center space-x-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-all shadow-md shadow-brand-600/20">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Exercise</span>
+                </button>
+                <div class="h-6 w-[1px] bg-slate-800 hidden sm:block"></div>
+                <div class="flex items-center space-x-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>System Sync: Active</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
+
+            <!-- TAB 4: CLIENT ONBOARDING & FEED (DEFAULT VIEW) -->
+            <section id="tab-feed" class="tab-content space-y-6">
+                <!-- Welcome Banner (PDF Pg 6 Inspired) -->
+                <div class="bg-gradient-to-r from-slate-900 via-brand-900/40 to-slate-900 border border-brand-500/30 rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-xl">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-white">
+                        <i class="fa-solid fa-dumbbell text-[180px]"></i>
+                    </div>
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="inline-block px-3 py-1 bg-brand-500/20 border border-brand-500/40 text-brand-neon rounded-full text-xs font-semibold mb-3">
+                            <i class="fa-solid fa-sparkles mr-1"></i> Client Onboarding & Daily Check-in
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-2">
+                            Good day <span id="welcome-client-name" class="text-brand-accent">Andrea Erickson</span>! 👋
+                        </h2>
+                        <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+                            We are so excited that you have signed up to train with us—we can't wait to get started! Track your routines, log your weight loss milestones, and hit your macro targets below.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="switchTab('tab-workout')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center space-x-2">
+                                <i class="fa-solid fa-play"></i>
+                                <span>Start Today's Workout</span>
+                            </button>
+                            <button onclick="switchTab('tab-analytics')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-sm px-5 py-2.5 rounded-xl transition-all">
+                                <span>View Nutrition Goals</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Workout Sentiment Logger (PDF Pg 6 Inspired) -->
+                <div class="bg-cardbg border border-slate-800 rounded-2xl p-6 shadow-md">
+                    <h3 class="text-base font-bold text-slate-100 mb-1">Post-Workout Feeling Check-in</h3>
+                    <p class="text-xs text-slate-400 mb-4">How did you feel during your last training session?</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <button onclick="logFeeling('Energized')" class="feeling-btn group border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-emerald-950/20 p-4 rounded-xl flex items-center space-x-4 transition-all text-left">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                ⚡
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-200 group-hover:text-emerald-400">Energized</div>
+                                <div class="text-xs text-slate-400">Pushed past limits</div>
+                            </div>
+                        </button>
+
+                        <button onclick="logFeeling('Strong')" class="feeling-btn group border border-slate-800 bg-slate-900/60 hover:border-brand-500/50 hover:bg-brand-950/20 p-4 rounded-xl flex items-center space-x-4 transition-all text-left">
+                            <div class="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-neon flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                💪
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-200 group-hover:text-brand-neon">Strong</div>
+                                <div class="text-xs text-slate-400">Great form & reps</div>
+                            </div>
+                        </button>
+
+                        <button onclick="logFeeling('Tired')" class="feeling-btn group border border-slate-800 bg-slate-900/60 hover:border-amber-500/50 hover:bg-amber-950/20 p-4 rounded-xl flex items-center space-x-4 transition-all text-left">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                😮‍💨
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-slate-200 group-hover:text-amber-400">Tired / Sore</div>
+                                <div class="text-xs text-slate-400">Needs active recovery</div>
+                            </div>
+                        </button>
+                    </div>
+                    <div id="feeling-feedback" class="hidden mt-4 p-3 bg-brand-950/40 border border-brand-500/30 rounded-lg text-xs text-brand-neon"></div>
+                </div>
+
+                <!-- Feed & Announcements -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Announcements -->
+                    <div class="lg:col-span-2 bg-cardbg border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <h3 class="font-bold text-slate-200 flex items-center space-x-2">
+                            <i class="fa-solid fa-bullhorn text-brand-accent"></i>
+                            <span>Coach Announcements & Feed</span>
+                        </h3>
+
+                        <!-- Post Item -->
+                        <div class="border border-slate-800 bg-slate-900/40 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <img src="IMG_5032_2.jpg" alt="Coach K.Flanning" class="w-9 h-9 rounded-full object-cover border-2 border-brand-500" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80';">
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-200">Coach K.Flanning</p>
+                                        <p class="text-[10px] text-slate-400">2 hours ago</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] bg-brand-500/20 text-brand-neon px-2 py-0.5 rounded font-medium">Program Note</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Great job completing Week 1! Remember for Day 2 Lower Body + HIIT: Keep your progressive overload steady on the Deadlifts (3x8). Ensure you consume 30g protein post-session!
+                            </p>
+                        </div>
+
+                        <!-- Post Item -->
+                        <div class="border border-slate-800 bg-slate-900/40 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold">AE</div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate-200">Andrea Erickson logged a workout</p>
+                                        <p class="text-[10px] text-slate-400">Yesterday at 5:30 PM</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-medium">Completed</span>
+                            </div>
+                            <p class="text-xs text-slate-300">
+                                Logged Day 1 Upper Body Push/Pull. Hit new personal record on Dumbbell Bench Press!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Client Quick Stats Widget -->
+                    <div class="bg-cardbg border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <h3 class="font-bold text-slate-200 text-sm">Monthly Roadmap</h3>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Start Weight</p>
+                                    <p class="text-lg font-extrabold text-slate-100">200 lbs</p>
+                                </div>
+                                <i class="fa-solid fa-flag text-slate-600 text-xl"></i>
+                            </div>
+
+                            <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Target Weight</p>
+                                    <p class="text-lg font-extrabold text-brand-neon">185 lbs</p>
+                                </div>
+                                <i class="fa-solid fa-trophy text-brand-accent text-xl"></i>
+                            </div>
+
+                            <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-semibold">Weekly Workout Target</p>
+                                    <p class="text-lg font-extrabold text-emerald-400">5 Sessions/wk</p>
+                                </div>
+                                <i class="fa-solid fa-calendar-check text-emerald-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 1: EXERCISE LIBRARY (PDF Pg 4 Inspired) -->
+            <section id="tab-exercises" class="tab-content hidden space-y-6">
+                <!-- Search & Actions Bar -->
+                <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-cardbg p-4 rounded-2xl border border-slate-800">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                        <input type="text" id="exercise-search" oninput="filterExercises()" placeholder="Search 24+ curated exercises by name or muscle target..." class="w-full bg-slate-900 border border-slate-700/80 pl-10 pr-4 py-2 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <button onclick="openModal('modal-add-exercise')" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md shadow-brand-600/30 flex items-center justify-center space-x-2 shrink-0">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add Custom Exercise</span>
+                    </button>
+                </div>
+
+                <!-- Goal Section Tabs (4 Categories in Order) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
+                    <button onclick="selectGoalTab('Mobility')" id="goal-tab-Mobility" class="goal-tab-btn py-3 px-4 rounded-xl text-xs font-bold transition-all text-brand-neon bg-brand-900/60 border border-brand-500/40 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-person-stretching text-sm"></i>
+                        <span>1. Mobility</span>
+                    </button>
+                    <button onclick="selectGoalTab('Stability')" id="goal-tab-Stability" class="goal-tab-btn py-3 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                        <span>2. Stability</span>
+                    </button>
+                    <button onclick="selectGoalTab('Cardio/HIIT')" id="goal-tab-Cardio/HIIT" class="goal-tab-btn py-3 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-fire text-sm"></i>
+                        <span>3. Cardio / HIIT</span>
+                    </button>
+                    <button onclick="selectGoalTab('Strength')" id="goal-tab-Strength" class="goal-tab-btn py-3 px-4 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-dumbbell text-sm"></i>
+                        <span>4. Strength</span>
+                    </button>
+                </div>
+
+                <!-- Section Subheading Banner -->
+                <div class="flex items-center justify-between px-2">
+                    <span id="section-info-badge" class="text-xs font-bold text-slate-300 flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-accent"></span>
+                        <span id="section-title-text">Section 1: Mobility Exercises (6 Movements)</span>
+                    </span>
+                    <span class="text-[11px] text-slate-500">Coach K.Flanning Approved</span>
+                </div>
+
+                <!-- Exercise Cards Grid -->
+                <div id="exercise-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamically populated via JS -->
+                </div>
+            </section>
+
+            <!-- TAB 2: INTERACTIVE WORKOUT & LOGGER (PDF Pg 2 & 5 Inspired) -->
+            <section id="tab-workout" class="tab-content hidden space-y-6">
+                <!-- Top Timer & Session Header -->
+                <div class="bg-cardbg border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-brand-500/20 text-brand-neon border border-brand-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">5-Day Model - Day 1</span>
+                            <span class="text-xs text-slate-400">Upper Body Strength (Push/Pull)</span>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Full Body Hypertrophy & Strength</h2>
+                        <p class="text-xs text-slate-400 mt-1">Be sure to warm up for 5-7 minutes with light dynamic stretching.</p>
+                    </div>
+
+                    <!-- Timers Box -->
+                    <div class="flex items-center space-x-4 bg-slate-900/90 border border-slate-800 p-3 rounded-xl">
+                        <!-- Elapsed Timer -->
+                        <div class="text-center px-3 border-r border-slate-800">
+                            <p class="text-[10px] uppercase font-bold text-slate-500">Workout Time</p>
+                            <p id="workout-timer" class="font-mono text-xl font-bold text-white">00:00</p>
+                        </div>
+                        <!-- Rest Timer -->
+                        <div class="text-center px-3">
+                            <p class="text-[10px] uppercase font-bold text-slate-500">Rest Timer</p>
+                            <p id="rest-timer" class="font-mono text-xl font-bold text-brand-neon">00:45</p>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <button onclick="toggleTimer()" id="btn-timer-toggle" class="bg-brand-600 hover:bg-brand-500 text-white text-xs px-3 py-1 rounded font-semibold transition-all">Start</button>
+                            <button onclick="resetRestTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] px-2 py-1 rounded transition-all">Rest 45s</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overall Progress Bar -->
+                <div class="bg-cardbg border border-slate-800 rounded-xl p-4">
+                    <div class="flex items-center justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300">Workout Completion</span>
+                        <span id="workout-progress-text" class="text-brand-neon">0% Completed</span>
+                    </div>
+                    <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+                        <div id="workout-progress-bar" class="bg-gradient-to-r from-brand-600 to-purple-400 h-full w-0 transition-all duration-500"></div>
+                    </div>
+                </div>
+
+                <!-- Workout Blocks -->
+                <div class="space-y-6">
+                    <!-- BLOCK A -->
+                    <div class="bg-cardbg border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                        <div class="bg-slate-900/80 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                            <h3 class="font-bold text-slate-100 text-base flex items-center space-x-2">
+                                <span class="w-6 h-6 rounded-md bg-brand-600 text-white flex items-center justify-center text-xs">A</span>
+                                <span>Block A - Compound Strength</span>
+                            </h3>
+                            <span class="text-xs text-slate-400">3 Exercises • 3 Sets Each</span>
+                        </div>
+
+                        <div class="divide-y divide-slate-800/60">
+                            <!-- Deadlift Item -->
+                            <div class="p-6 space-y-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <div>
+                                        <h4 class="font-bold text-slate-100 text-lg">Barbell Deadlift</h4>
+                                        <p class="text-xs text-slate-400">Target: 3 sets x 8 reps | Progressive Overload</p>
+                                    </div>
+                                    <span class="self-start sm:self-auto bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-md font-mono">Rest 90s</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="grid grid-cols-12 gap-2 text-[11px] font-bold text-slate-500 uppercase px-2">
+                                        <span class="col-span-2">Set</span>
+                                        <span class="col-span-4">Lbs</span>
+                                        <span class="col-span-4">Reps</span>
+                                        <span class="col-span-2 text-center">Done</span>
+                                    </div>
+                                    
+                                    <!-- Set 1 -->
+                                    <div class="grid grid-cols-12 gap-2 items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                        <span class="col-span-2 text-xs font-bold text-slate-400 px-2">Set 1</span>
+                                        <input type="number" value="185" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <input type="number" value="8" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <div class="col-span-2 flex justify-center">
+                                            <input type="checkbox" onchange="updateWorkoutProgress()" class="set-checkbox w-5 h-5 rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-950 cursor-pointer">
+                                        </div>
+                                    </div>
+                                    <!-- Set 2 -->
+                                    <div class="grid grid-cols-12 gap-2 items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                        <span class="col-span-2 text-xs font-bold text-slate-400 px-2">Set 2</span>
+                                        <input type="number" value="185" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <input type="number" value="8" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <div class="col-span-2 flex justify-center">
+                                            <input type="checkbox" onchange="updateWorkoutProgress()" class="set-checkbox w-5 h-5 rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-950 cursor-pointer">
+                                        </div>
+                                    </div>
+                                    <!-- Set 3 -->
+                                    <div class="grid grid-cols-12 gap-2 items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                        <span class="col-span-2 text-xs font-bold text-slate-400 px-2">Set 3</span>
+                                        <input type="number" value="195" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <input type="number" value="8" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <div class="col-span-2 flex justify-center">
+                                            <input type="checkbox" onchange="updateWorkoutProgress()" class="set-checkbox w-5 h-5 rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-950 cursor-pointer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bench Press Item -->
+                            <div class="p-6 space-y-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <div>
+                                        <h4 class="font-bold text-slate-100 text-lg">Dumbbell Bench Press</h4>
+                                        <p class="text-xs text-slate-400">Target: 3 sets x 8 reps | Controlled eccentric phase</p>
+                                    </div>
+                                    <span class="self-start sm:self-auto bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-md font-mono">Rest 60s</span>
+                                </div>
+                                <div class="space-y-2">
+                                    <!-- Set 1 -->
+                                    <div class="grid grid-cols-12 gap-2 items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                        <span class="col-span-2 text-xs font-bold text-slate-400 px-2">Set 1</span>
+                                        <input type="number" value="50" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <input type="number" value="8" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <div class="col-span-2 flex justify-center">
+                                            <input type="checkbox" onchange="updateWorkoutProgress()" class="set-checkbox w-5 h-5 rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-950 cursor-pointer">
+                                        </div>
+                                    </div>
+                                    <!-- Set 2 -->
+                                    <div class="grid grid-cols-12 gap-2 items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                        <span class="col-span-2 text-xs font-bold text-slate-400 px-2">Set 2</span>
+                                        <input type="number" value="50" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <input type="number" value="8" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                        <div class="col-span-2 flex justify-center">
+                                            <input type="checkbox" onchange="updateWorkoutProgress()" class="set-checkbox w-5 h-5 rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-950 cursor-pointer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOCK B (PDF Pg 5 Inspired) -->
+                    <div class="bg-cardbg border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+                        <div class="bg-slate-900/80 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                            <h3 class="font-bold text-slate-100 text-base flex items-center space-x-2">
+                                <span class="w-6 h-6 rounded-md bg-purple-600 text-white flex items-center justify-center text-xs">B</span>
+                                <span>Block B - Accessory & Lateral Stability</span>
+                            </h3>
+                            <span class="text-xs text-slate-400">1 Exercise • 3 Sets</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div>
+                                    <h4 class="font-bold text-slate-100 text-lg">Band Resisted Crossover Step</h4>
+                                    <p class="text-xs text-slate-400">Target: 3 sets x 5 reps per side | 0:30 rest</p>
+                                </div>
+                                <span class="self-start sm:self-auto bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-md font-mono">Rest 30s</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="grid grid-cols-12 gap-2 items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                                    <span class="col-span-2 text-xs font-bold text-slate-400 px-2">Set 1</span>
+                                    <input type="text" value="Black Band" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                    <input type="number" value="5" class="col-span-4 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                                    <div class="col-span-2 flex justify-center">
+                                        <input type="checkbox" onchange="updateWorkoutProgress()" class="set-checkbox w-5 h-5 rounded border-slate-700 text-brand-600 focus:ring-brand-500 bg-slate-950 cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notes Box -->
+                            <div class="pt-2">
+                                <label class="text-xs font-bold text-slate-400 block mb-1">Exercise & Performance Notes</label>
+                                <textarea text-sm placeholder="Perform explosive lateral 2 step slides using your resistance band..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-brand-500 h-20"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete Workout Action -->
+                <div class="flex justify-end pt-4">
+                    <button onclick="finishWorkout()" class="bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-brand-600/30">
+                        Complete & Log Workout
+                    </button>
+                </div>
+            </section>
+
+            <!-- TAB 3: MONTHLY PROGRESS & MACRO ANALYTICS (PDF Pg 1, 3 Inspired) -->
+            <section id="tab-analytics" class="tab-content hidden space-y-6">
+                
+                <!-- Nutrition & Macro Target Card (PDF Pg 1 Inspired) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Macro Breakdown Card -->
+                    <div class="bg-cardbg border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-100 text-base">Macro Split (40/30/30)</h3>
+                            <span class="text-xs text-brand-neon bg-brand-500/20 px-2 py-0.5 rounded font-semibold">500 kcal Deficit</span>
+                        </div>
+
+                        <!-- Macro Progress Visuals -->
+                        <div class="space-y-3 pt-2">
+                            <!-- Carbs -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300 font-medium">Carbohydrates (40%)</span>
+                                    <span class="text-amber-400 font-bold">190g / Target</span>
+                                </div>
+                                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-amber-400 h-full w-[40%]"></div>
+                                </div>
+                            </div>
+                            <!-- Protein -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300 font-medium">Protein (30%)</span>
+                                    <span class="text-brand-neon font-bold">142g / Target</span>
+                                </div>
+                                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-brand-500 h-full w-[30%]"></div>
+                                </div>
+                            </div>
+                            <!-- Fats -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-300 font-medium">Fats (30%)</span>
+                                    <span class="text-emerald-400 font-bold">63g / Target</span>
+                                </div>
+                                <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-emerald-400 h-full w-[30%]"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs text-slate-400">
+                            <p><strong class="text-slate-200">Daily Goal:</strong> 1,900 kcal (BMR based, 3-4 meals + 1 snack, high fiber & lean proteins).</p>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Report Form (PDF Pg 3 Inspired) -->
+                    <div class="lg:col-span-2 bg-cardbg border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="font-bold text-slate-100 text-base">Monthly Progress & Plateau Report</h3>
+                            <span class="text-xs text-slate-400">Client Check-in</span>
+                        </div>
+
+                        <form id="progressForm" onsubmit="saveProgressReport(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-semibold text-slate-400 block mb-1">Current Weight (lbs)</label>
+                                <input type="number" id="currentWeight" value="191" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-semibold text-slate-400 block mb-1">Target Weight (lbs)</label>
+                                <input type="number" id="targetWeight" value="185" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-semibold text-slate-400 block mb-1">Waist Circumference (in)</label>
+                                <input type="number" step="0.5" id="waistSize" value="34.5" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-semibold text-slate-400 block mb-1">Hip Circumference (in)</label>
+                                <input type="number" step="0.5" id="hipSize" value="39.0" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="text-xs font-semibold text-slate-400 block mb-1">Nutrition Adherence & Plateau Notes</label>
+                                <textarea id="nutritionNotes" placeholder="Log average adherence, cheat meals, or emotional eating triggers..." class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500 h-20">Averaged 90% compliance this week. Increased water intake to 3L daily.</textarea>
+                            </div>
+
+                            <div class="md:col-span-2 flex justify-end">
+                                <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md shadow-brand-600/30">
+                                    Save Monthly Check-in
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Visual Weight Trend Grid -->
+                <div class="bg-cardbg border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="font-bold text-slate-100 text-base">Weight Progress Log</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Week 1</span>
+                            <span class="text-xl font-extrabold text-slate-200">200 lbs</span>
+                            <span class="text-[10px] text-slate-500 block mt-1">Baseline</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Week 2</span>
+                            <span class="text-xl font-extrabold text-slate-200">196 lbs</span>
+                            <span class="text-[10px] text-emerald-400 block mt-1">-4 lbs</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Week 3</span>
+                            <span class="text-xl font-extrabold text-slate-200">193 lbs</span>
+                            <span class="text-[10px] text-emerald-400 block mt-1">-3 lbs</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-4 border border-brand-500/40 rounded-xl text-center bg-brand-950/20">
+                            <span class="text-[10px] text-brand-neon font-bold uppercase block">Week 4 (Current)</span>
+                            <span id="display-current-weight" class="text-xl font-extrabold text-brand-neon">191 lbs</span>
+                            <span class="text-[10px] text-emerald-400 block mt-1">-2 lbs</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ADD EXERCISE MODAL (PDF Pg 4 Inspired) -->
+    <div id="modal-add-exercise" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cardbg border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-white">Add New Exercise</h3>
+                <button onclick="closeModal('modal-add-exercise')" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <form id="addExerciseForm" onsubmit="handleCreateExercise(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 block mb-1">Exercise Name</label>
+                    <input type="text" id="new-ex-name" required placeholder="e.g. MB Negative Lateral Hop" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 block mb-1">Category / Movement Pattern</label>
+                    <select id="new-ex-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                        <option value="Strength">Strength (Push / Pull / Legs)</option>
+                        <option value="Cardio/HIIT">Cardio / HIIT / Footwork</option>
+                        <option value="Mobility">Mobility / Yoga</option>
+                        <option value="Stability">Stability / Core</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 block mb-1">YouTube Video URL / Embed ID (Optional)</label>
+                    <input type="text" id="new-ex-video" placeholder="e.g. dGmcI-r666c or https://youtube.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 block mb-1">Thumbnail Preview URL (Optional)</label>
+                    <input type="url" id="new-ex-thumb" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeModal('modal-add-exercise')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold shadow-md shadow-brand-600/30">Save Exercise</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- EXERCISE VIDEO MODAL -->
+    <div id="modal-video-player" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cardbg border border-slate-800 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl space-y-0">
+            <div class="flex items-center justify-between p-4 bg-slate-900/90 border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+                    <h3 id="video-modal-title" class="text-base font-bold text-white tracking-tight">How-To Tutorial</h3>
+                </div>
+                <button onclick="closeVideoModal()" class="text-slate-400 hover:text-white w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Responsive Video Embed Container -->
+            <div class="relative w-full aspect-video bg-black">
+                <iframe id="video-iframe" class="w-full h-full" src="" title="Exercise Video Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <p id="video-modal-target" class="text-xs text-brand-neon font-semibold"></p>
+                    <p id="video-modal-equip" class="text-xs text-slate-400"></p>
+                </div>
+                <button onclick="closeVideoModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2 rounded-xl transition-all self-end sm:self-auto">
+                    Close Tutorial
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // Structured Goal-Based Exercise Library with Embedded How-To Videos (6 per Category = 24 Total)
+        let currentGoalTab = 'Mobility';
+
+        let exercises = [
+            // TAB 1: MOBILITY (6)
+            { id: 1, name: "90/90 Hip Switches", category: "Mobility", target: "Hips & Pelvis", equip: "Bodyweight", date: "Coach Verified", youtubeId: "c3dM4kI35fU", thumb: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&auto=format&fit=crop&q=80" },
+            { id: 2, name: "World's Greatest Stretch", category: "Mobility", target: "Full Body / Thoracic", equip: "Bodyweight", date: "Coach Verified", youtubeId: "-Cliq68hI3w", thumb: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&auto=format&fit=crop&q=80" },
+            { id: 3, name: "Cat-Cow Segmentations", category: "Mobility", target: "Spine & Core", equip: "Mat", date: "Coach Verified", youtubeId: "w_UKcI16T54", thumb: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&auto=format&fit=crop&q=80" },
+            { id: 4, name: "Ankle Mobilization Wall Slides", category: "Mobility", target: "Ankles & Calves", equip: "Wall / Mat", date: "Coach Verified", youtubeId: "D8e1cM73nC8", thumb: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=400&auto=format&fit=crop&q=80" },
+            { id: 5, name: "Thoracic Windmills", category: "Mobility", target: "Upper Back & Shoulders", equip: "Mat", date: "Coach Verified", youtubeId: "3h7o-7-V7H0", thumb: "https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=400&auto=format&fit=crop&q=80" },
+            { id: 6, name: "Scapular Wall Slides", category: "Mobility", target: "Scapular Retractors", equip: "Wall", date: "Coach Verified", youtubeId: "5t-S4yT-u-8", thumb: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80" },
+
+            // TAB 2: STABILITY (6)
+            { id: 7, name: "Bird Dog with 3s Pause", category: "Stability", target: "Core & Lumbar", equip: "Mat", date: "Coach Verified", youtubeId: "wiFNA3sqjCA", thumb: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&auto=format&fit=crop&q=80" },
+            { id: 8, name: "Single-Leg RDL Balance Hold", category: "Stability", target: "Glutes & Hamstrings", equip: "Bodyweight / DB", date: "Coach Verified", youtubeId: "4Z8Z5vF21iM", thumb: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&auto=format&fit=crop&q=80" },
+            { id: 9, name: "Pallof Press", category: "Stability", target: "Anti-Rotation Core", equip: "Resistance Band", date: "Coach Verified", youtubeId: "5_EjWeE_320", thumb: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=400&auto=format&fit=crop&q=80" },
+            { id: 10, name: "Bear Crawl Isometric Hold", category: "Stability", target: "Deep Core & Shoulders", equip: "Mat", date: "Coach Verified", youtubeId: "nJ8A9Wk6C-Y", thumb: "https://images.unsplash.com/photo-1517836833214-750489540b90?w=400&auto=format&fit=crop&q=80" },
+            { id: 11, name: "Suitcase Carry", category: "Stability", target: "Obliques & Grip", equip: "Dumbbell / KB", date: "Coach Verified", youtubeId: "A3W9r52Z3d8", thumb: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&auto=format&fit=crop&q=80" },
+            { id: 12, name: "Half-Kneeling Overhead Hold", category: "Stability", target: "Shoulder & Core", equip: "Kettlebell / DB", date: "Coach Verified", youtubeId: "B7n70Z-1o2Q", thumb: "https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?w=400&auto=format&fit=crop&q=80" },
+
+            // TAB 3: CARDIO / HIIT (6)
+            { id: 13, name: "Cross Footwork Jump Rope", category: "Cardio/HIIT", target: "Calves & Endurance", equip: "Jump Rope", date: "Coach Verified", youtubeId: "1BZM2Vre5oc", thumb: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80" },
+            { id: 14, name: "MB Negative Lateral Hop >> Wall Push", category: "Cardio/HIIT", target: "Explosive Power", equip: "Medicine Ball", date: "Coach Verified", youtubeId: "vN-4Q1mN5yM", thumb: "https://images.unsplash.com/photo-1517836833214-750489540b90?w=400&auto=format&fit=crop&q=80" },
+            { id: 15, name: "Kettlebell Swings", category: "Cardio/HIIT", target: "Posterior Chain & Cardio", equip: "Kettlebell", date: "Coach Verified", youtubeId: "sSESeQW-7-k", thumb: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80" },
+            { id: 16, name: "Mountain Climber Sprint Intervals", category: "Cardio/HIIT", target: "Full Body Cardio", equip: "Bodyweight / Mat", date: "Coach Verified", youtubeId: "zT-9L3CE8mI", thumb: "https://images.unsplash.com/photo-1434608519344-49d77a699e1d?w=400&auto=format&fit=crop&q=80" },
+            { id: 17, name: "Dumbbell Thrusters", category: "Cardio/HIIT", target: "Legs & Shoulders", equip: "Dumbbells", date: "Coach Verified", youtubeId: "L219ltL15zk", thumb: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&auto=format&fit=crop&q=80" },
+            { id: 18, name: "High Knees to Skater Bops", category: "Cardio/HIIT", target: "Agility & Heart Rate", equip: "Bodyweight", date: "Coach Verified", youtubeId: "OAJ_J3165Zg", thumb: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&auto=format&fit=crop&q=80" },
+
+            // TAB 4: STRENGTH (6)
+            { id: 19, name: "Barbell Conventional Deadlift", category: "Strength", target: "Hamstrings & Lower Back", equip: "Barbell", date: "Coach Verified", youtubeId: "op9kVnSso6Q", thumb: "https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?w=400&auto=format&fit=crop&q=80" },
+            { id: 20, name: "Flat Dumbbell Bench Press", category: "Strength", target: "Chest & Triceps", equip: "Dumbbells & Bench", date: "Coach Verified", youtubeId: "VmB1G1K7vDA", thumb: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&auto=format&fit=crop&q=80" },
+            { id: 21, name: "Bulgarian Split Squat", category: "Strength", target: "Quadriceps & Glutes", equip: "Dumbbells", date: "Coach Verified", youtubeId: "2C-uNgKwPLE", thumb: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&auto=format&fit=crop&q=80" },
+            { id: 22, name: "Band Resisted Crossover Step", category: "Strength", target: "Glute Medius & Hips", equip: "Resistance Band", date: "Coach Verified", youtubeId: "Z4uWnLh8-4A", thumb: "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=400&auto=format&fit=crop&q=80" },
+            { id: 23, name: "Goblet Deep Squat", category: "Strength", target: "Quads & Glutes", equip: "Kettlebell / DB", date: "Coach Verified", youtubeId: "MeIiIdhvKL4", thumb: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80" },
+            { id: 24, name: "Neutral Grip Bent-Over Row", category: "Strength", target: "Lats & Upper Back", equip: "Dumbbells", date: "Coach Verified", youtubeId: "6TSP1TRMUzy", thumb: "https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?w=400&auto=format&fit=crop&q=80" }
+        ];
+
+        // Timer Variables
+        let workoutSeconds = 0;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        window.onload = function() {
+            renderExercises();
+            updateWorkoutProgress();
+        };
+
+        // Navigation Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-neon', 'bg-brand-900/40', 'border', 'border-brand-500/30');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('text-brand-neon', 'bg-brand-900/40', 'border', 'border-brand-500/30');
+            activeBtn.classList.remove('text-slate-400');
+
+            // Page Titles
+            const titles = {
+                'tab-feed': 'Client Welcome Feed',
+                'tab-workout': 'Active Workout Session',
+                'tab-exercises': 'Exercise Library - 4 Sections',
+                'tab-analytics': 'Monthly Progress & Macro Analytics'
+            };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        // Section Tab Switcher inside Exercise Library
+        function selectGoalTab(category) {
+            currentGoalTab = category;
+            
+            // Update Goal Tab Button Styles
+            document.querySelectorAll('.goal-tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-neon', 'bg-brand-900/60', 'border', 'border-brand-500/40');
+                btn.classList.add('text-slate-400');
+            });
+            const activeGoalBtn = document.getElementById('goal-tab-' + category);
+            if(activeGoalBtn) {
+                activeGoalBtn.classList.add('text-brand-neon', 'bg-brand-900/60', 'border', 'border-brand-500/40');
+                activeGoalBtn.classList.remove('text-slate-400');
+            }
+
+            // Update Banner Subtitle
+            const titles = {
+                'Mobility': 'Section 1: Mobility Exercises (6 Movements)',
+                'Stability': 'Section 2: Stability Exercises (6 Movements)',
+                'Cardio/HIIT': 'Section 3: Cardio / HIIT Exercises (6 Movements)',
+                'Strength': 'Section 4: Strength Exercises (6 Movements)'
+            };
+            document.getElementById('section-title-text').innerText = titles[category] || category;
+
+            renderExercises();
+        }
+
+        // Client Switcher Logic
+        function switchClient(clientKey) {
+            const clientNames = {
+                'andrea': 'Andrea Erickson',
+                'marcus': 'Marcus Vance',
+                'sarah': 'Sarah Jenkins'
+            };
+            document.getElementById('welcome-client-name').innerText = clientNames[clientKey] || 'Client';
+        }
+
+        // Render Exercise Cards Grid filtered by current Goal Tab & Search Query
+        function renderExercises() {
+            const grid = document.getElementById('exercise-grid');
+            grid.innerHTML = '';
+            
+            const query = (document.getElementById('exercise-search')?.value || '').toLowerCase();
+
+            const filtered = exercises.filter(item => {
+                const matchesTab = item.category === currentGoalTab;
+                const matchesSearch = item.name.toLowerCase().includes(query) || (item.target && item.target.toLowerCase().includes(query));
+                return matchesTab && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500">
+                        <i class="fa-solid fa-dumbbell text-4xl mb-3 opacity-40"></i>
+                        <p class="text-sm font-semibold">No exercises match your search in ${currentGoalTab}.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-cardbg border border-slate-800 rounded-2xl overflow-hidden hover:border-brand-500/50 transition-all flex flex-col justify-between shadow-lg group';
+                card.innerHTML = `
+                    <div class="relative h-44 bg-slate-900 overflow-hidden cursor-pointer" onclick="openVideoModal(${item.id})">
+                        <img src="${item.thumb}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80'">
+                        <div class="absolute inset-0 bg-slate-950/40 group-hover:bg-slate-950/20 transition-colors flex items-center justify-center">
+                            <div class="w-12 h-12 rounded-full bg-brand-600/90 text-white flex items-center justify-center shadow-lg shadow-brand-600/50 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play ml-0.5 text-base"></i>
+                            </div>
+                        </div>
+                        <span class="absolute top-3 right-3 bg-slate-950/80 backdrop-blur text-brand-neon border border-brand-500/30 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">${item.category}</span>
+                        <span class="absolute bottom-3 left-3 bg-slate-950/80 backdrop-blur text-white text-[10px] font-semibold px-2 py-0.5 rounded flex items-center space-x-1">
+                            <i class="fa-solid fa-circle-play text-red-500"></i>
+                            <span>How-To Video</span>
+                        </span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <h4 class="font-bold text-slate-100 text-sm leading-snug">${item.name}</h4>
+                            <div class="mt-2 space-y-1">
+                                <div class="flex items-center text-xs text-slate-400">
+                                    <i class="fa-solid fa-bullseye w-4 text-brand-accent"></i>
+                                    <span class="font-medium text-slate-300 mr-1">Target:</span> ${item.target}
+                                </div>
+                                <div class="flex items-center text-xs text-slate-400">
+                                    <i class="fa-solid fa-toolbox w-4 text-emerald-400"></i>
+                                    <span class="font-medium text-slate-300 mr-1">Equipment:</span> ${item.equip}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="openVideoModal(${item.id})" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl transition-all font-semibold flex items-center justify-center space-x-1.5 border border-slate-700">
+                                <i class="fa-solid fa-video text-brand-neon text-[11px]"></i>
+                                <span>Watch Form</span>
+                            </button>
+                            <button onclick="switchTab('tab-workout')" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white text-xs py-2 rounded-xl transition-all font-semibold flex items-center justify-center space-x-1.5 shadow-md shadow-brand-600/20">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <span>Add to Log</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Open Exercise How-To Video Modal
+        function openVideoModal(exId) {
+            const ex = exercises.find(item => item.id === exId);
+            if(!ex) return;
+
+            document.getElementById('video-modal-title').innerText = `${ex.name} - Form & Technique`;
+            document.getElementById('video-modal-target').innerText = `Target Muscle: ${ex.target}`;
+            document.getElementById('video-modal-equip').innerText = `Required Equipment: ${ex.equip}`;
+            
+            const iframe = document.getElementById('video-iframe');
+            iframe.src = `https://www.youtube.com/embed/${ex.youtubeId}?autoplay=1&rel=0`;
+
+            document.getElementById('modal-video-player').classList.remove('hidden');
+        }
+
+        function closeVideoModal() {
+            const iframe = document.getElementById('video-iframe');
+            iframe.src = ""; // Stop video playback on close
+            document.getElementById('modal-video-player').classList.add('hidden');
+        }
+
+        // Filter Exercises via Input Search
+        function filterExercises() {
+            renderExercises();
+        }
+
+        // Add Exercise Form Submission
+        function handleCreateExercise(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-ex-name').value;
+            const category = document.getElementById('new-ex-category').value;
+            let videoInput = document.getElementById('new-ex-video').value || "c3dM4kI35fU";
+            let thumb = document.getElementById('new-ex-thumb').value;
+
+            // Extract YouTube ID if full URL pasted
+            let youtubeId = videoInput;
+            if (videoInput.includes('v=')) {
+                youtubeId = videoInput.split('v=')[1].split('&')[0];
+            } else if (videoInput.includes('youtu.be/')) {
+                youtubeId = videoInput.split('youtu.be/')[1].split('?')[0];
+            }
+
+            if(!thumb) thumb = "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80";
+
+            const newEx = {
+                id: exercises.length + 1,
+                name: name,
+                category: category,
+                target: "Custom Focus",
+                equip: "Gym Equipment",
+                date: "Today",
+                youtubeId: youtubeId,
+                thumb: thumb
+            };
+
+            exercises.unshift(newEx);
+            selectGoalTab(category);
+            closeModal('modal-add-exercise');
+            document.getElementById('addExerciseForm').reset();
+        }
+
+        // Modals
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Workout Progress Update
+        function updateWorkoutProgress() {
+            const checkboxes = document.querySelectorAll('.set-checkbox');
+            const total = checkboxes.length;
+            let checkedCount = 0;
+
+            checkboxes.forEach(cb => {
+                if(cb.checked) checkedCount++;
+            });
+
+            const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
+            document.getElementById('workout-progress-bar').style.width = percent + '%';
+            document.getElementById('workout-progress-text').innerText = percent + '% Completed';
+        }
+
+        // Workout Timers
+        function toggleTimer() {
+            const btn = document.getElementById('btn-timer-toggle');
+            if(!isTimerRunning) {
+                isTimerRunning = true;
+                btn.innerText = "Pause";
+                btn.className = "bg-amber-600 hover:bg-amber-500 text-white text-xs px-3 py-1 rounded font-semibold transition-all";
+                timerInterval = setInterval(() => {
+                    workoutSeconds++;
+                    const mins = String(Math.floor(workoutSeconds / 60)).padStart(2, '0');
+                    const secs = String(workoutSeconds % 60).padStart(2, '0');
+                    document.getElementById('workout-timer').innerText = `${mins}:${secs}`;
+                }, 1000);
+            } else {
+                isTimerRunning = false;
+                btn.innerText = "Resume";
+                btn.className = "bg-brand-600 hover:bg-brand-500 text-white text-xs px-3 py-1 rounded font-semibold transition-all";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function resetRestTimer() {
+            document.getElementById('rest-timer').innerText = "00:45";
+        }
+
+        // Post Workout Feelings Logger (PDF Pg 6)
+        function logFeeling(feeling) {
+            const box = document.getElementById('feeling-feedback');
+            box.classList.remove('hidden');
+            box.innerText = `Logged status: "${feeling}". Coach K.Flanning will review your intensity feedback for next week's progression!`;
+        }
+
+        // Save Progress Form
+        function saveProgressReport(e) {
+            e.preventDefault();
+            const currW = document.getElementById('currentWeight').value;
+            document.getElementById('display-current-weight').innerText = `${currW} lbs`;
+            
+            alert('Monthly Check-in Data Successfully Logged!');
+        }
+
+        function finishWorkout() {
+            alert('Workout Logged Successfully! Great work staying consistent.');
+            switchTab('tab-feed');
+        }
+    </script>
+</body>
+</html>
